@@ -49,7 +49,7 @@ Identifier = {Letter}({Letter}|{Digit}|_){0,31}
     /* Adicione as demais aqui... */
 
     /* TODO 4: Pontuação ( ) { } ; */
-    "("             { return token(Tag.LPAREN, yytext()); }
+    \(             { return token(Tag.LPAREN, yytext()); }
     /* Adicione as demais aqui... */
 
     /* TODO 5: Operadores de Atribuição e Relacionais (=, ==, !=, <, >, <=, >=) */
