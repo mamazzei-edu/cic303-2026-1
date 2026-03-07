@@ -16,4 +16,4 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Executar Testes (Juiz Automático)
-      run: mvn -B test --file pom.xml
+      run: mvn -B test --file fase01-o-caos-das-strings/pom.xml
