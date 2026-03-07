@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import java.io.StringReader;
 import br.maua.cic303.ast.ASTNode;
 
-public class ValidadorFase4Test {
+public class ValidadorFase5Test {
 
     private ASTNode compilarParaAST(String codigo) throws Exception {
         Lexer lexer = new Lexer(new StringReader(codigo));
