@@ -1,19 +1,84 @@
-name: Corretor Automático JACA
-
-on:
-  push:
-    branches: [ "main" ]
-
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
 jobs:
-  build:
+  run-autograding-tests:
     runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # ADICIONADO: Configuração do Java 21 para o Maven compilar corretamente
     - name: Configurar JDK 21
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
-    - name: Executar Testes (Juiz Automático)
-      run: mvn -B test --file fase01-o-caos-das-strings/pom.xml
+
+    - name: Teste 01 - Ignorar espaços
+      id: teste-01-ignorar-espacos
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Teste 01 - Ignorar espaços
+        setup-command: ''
+        command: mvn test -Dtest=ValidadorFase1Test#test01_IgnorarEspacosEmBranco -f fase01-o-caos-das-strings/pom.xml
+        timeout: 10
+        max-score: 2
+
+    - name: Teste 02 - Operadores
+      id: teste-02-operadores
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Teste 02 - Operadores
+        setup-command: ''
+        command: mvn test -Dtest=ValidadorFase1Test#test02_OperadoresSimples -f fase01-o-caos-das-strings/pom.xml
+        timeout: 10
+        max-score: 2
+
+    - name: Teste 03 - Identificadores
+      id: teste-03-identificadores
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Teste 03 - Identificadores
+        setup-command: ''
+        command: mvn test -Dtest=ValidadorFase1Test#test03_Identificadores -f fase01-o-caos-das-strings/pom.xml
+        timeout: 10
+        max-score: 2
+
+    - name: Teste 04 - Números
+      id: teste-04-numeros
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Teste 04 - Números
+        setup-command: ''
+        command: mvn test -Dtest=ValidadorFase1Test#test04_Numeros -f fase01-o-caos-das-strings/pom.xml
+        timeout: 10
+        max-score: 2
+
+    - name: Teste 05 - Programa completo
+      id: teste-05-programa-completo
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Teste 05 - Programa completo
+        setup-command: ''
+        command: mvn test -Dtest=ValidadorFase1Test#test05_ProgramaCompleto -f fase01-o-caos-das-strings/pom.xml
+        timeout: 10
+        max-score: 2
+
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TESTE-01-IGNORAR-ESPACOS_RESULTS: "${{steps.teste-01-ignorar-espacos.outputs.result}}"
+        TESTE-02-OPERADORES_RESULTS: "${{steps.teste-02-operadores.outputs.result}}"
+        TESTE-03-IDENTIFICADORES_RESULTS: "${{steps.teste-03-identificadores.outputs.result}}"
+        TESTE-04-NUMEROS_RESULTS: "${{steps.teste-04-numeros.outputs.result}}"
+        TESTE-05-PROGRAMA-COMPLETO_RESULTS: "${{steps.teste-05-programa-completo.outputs.result}}"
+      with:
+        runners: teste-01-ignorar-espacos,teste-02-operadores,teste-03-identificadores,teste-04-numeros,teste-05-programa-completo
